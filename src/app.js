@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
+const redirecionarParaController = require("./util/controllerMagic");
+const pastaControladores = `${__dirname}\\controllers`;
 
-app.use(express.json());
-
-app.use("/", require("./controllers/homepageController"));
-app.use("/register", require("./controllers/registerController"));
-app.use("/login", require("./controllers/loginController"));
+app.use((req, res, next) => {
+  redirecionarParaController(req, res, next, pastaControladores);
+});
 
 app.use((req, res, next) => {
   const erro = new Error("Não encontrado");
