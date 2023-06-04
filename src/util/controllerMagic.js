@@ -1,58 +1,58 @@
 const fs = require("fs");
 const path = require("path");
 
-function redirecionarParaController(req, res, next, pastaControladores) {
-  const rotas = {};
-  percorrerDiretorioControladores(pastaControladores, rotas);
+function magicController(req, res, next, controllersDirectory) {
+  const routes = {};
+  traverseControllerDirectory(controllersDirectory, routes);
 
-  const rota = req.path;
-  const controller = rotas[rota];
+  const route = req.path;
+  const controller = routes[route];
   if (!controller) {
-    res.status(404).send("Rota não encontrada");
+    res.status(404).send("Route not found");
     return;
   }
 
   try {
-    const metodo = req.method.toLowerCase();
-    if (controller[metodo]) {
-      controller[metodo](req, res, next);
+    const method = req.method.toLowerCase();
+    if (controller[method]) {
+      controller[method](req, res, next);
     } else {
-      res.status(405).send("Método não permitido");
+      res.status(405).send("Method not allowed");
     }
   } catch (error) {
-    res.status(500).send("Erro ao processar a rota");
+    res.status(500).send("Error processing the route");
   }
 }
 
-function percorrerDiretorioControladores(diretorio, rotas, prefixo = "") {
-  const arquivos = fs.readdirSync(diretorio);
+function traverseControllerDirectory(directory, routes, prefix = "") {
+  const files = fs.readdirSync(directory);
 
-  arquivos.forEach((arquivo) => {
-    const caminhoArquivo = path.join(diretorio, arquivo);
-    const stats = fs.statSync(caminhoArquivo);
+  files.forEach((file) => {
+    const filePath = path.join(directory, file);
+    const stats = fs.statSync(filePath);
 
     if (stats.isDirectory()) {
-      const novoPrefixo = path.join(prefixo, arquivo);
-      percorrerDiretorioControladores(caminhoArquivo, rotas, novoPrefixo);
-    } else if (stats.isFile() && arquivo.endsWith(".js")) {
-      const controlador = require(caminhoArquivo);
-      const nomeRota = obterNomeRota(controlador, arquivo);
-      const rota = path.join(prefixo, nomeRota).toLowerCase();
-      rotas[`/${rota}`] = controlador;
+      const newPrefix = path.join(prefix, file);
+      traverseControllerDirectory(filePath, routes, newPrefix);
+    } else if (stats.isFile() && file.endsWith(".js")) {
+      const controller = require(filePath);
+      const routeName = getRouteName(controller, file);
+      const route = path.join(prefix, routeName).toLowerCase();
+      routes[`/${route}`] = controller;
     }
   });
 }
 
-function obterNomeRota(controlador, arquivo) {
-  const comentarioRota = controlador.toString().match(/@route\s+(.+)/);
-  if (comentarioRota && comentarioRota.length > 1) {
-    return comentarioRota[1].trim();
+function getRouteName(controller, file) {
+  const routeComment = controller.toString().match(/@route\s+(.+)/);
+  if (routeComment && routeComment.length > 1) {
+    return routeComment[1].trim();
   }
-  let nomeRota = arquivo.replace(".js", "");
-  if (nomeRota.toLowerCase().endsWith("controller")) {
-    nomeRota = nomeRota.slice(0, -10);
+  let routeName = file.replace(".js", "");
+  if (routeName.toLowerCase().endsWith("controller")) {
+    routeName = routeName.slice(0, -10);
   }
-  return nomeRota;
+  return routeName;
 }
 
-module.exports = redirecionarParaController;
+module.exports = magicController;

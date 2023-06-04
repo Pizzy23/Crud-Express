@@ -4,7 +4,3 @@ const router = express.Router();
 exports.post = function (req, res, next) {
   res.send("Funciona :)  register");
 };
-
-exports.get = function (req, res, next) {
-  res.send("Funciona :)  register");
-};
