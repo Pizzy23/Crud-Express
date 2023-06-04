@@ -2,15 +2,8 @@ const fs = require("fs");
 const path = require("path");
 
 function redirecionarParaController(req, res, next, pastaControladores) {
-  
   const rotas = {};
-  fs.readdirSync(pastaControladores).forEach((arquivo) => {
-    if (arquivo.endsWith(".js")) {
-      const controlador = require(path.join(pastaControladores, arquivo));
-      const nomeRota = arquivo.replace(".js", "");
-      rotas[`/${nomeRota}`] = controlador;
-    }
-  });
+  percorrerDiretorioControladores(pastaControladores, rotas);
 
   const rota = req.path;
   const controller = rotas[rota];
@@ -20,26 +13,46 @@ function redirecionarParaController(req, res, next, pastaControladores) {
   }
 
   try {
-    switch (req.method) {
-      case "GET":
-        controller.get(req, res, next);
-        break;
-      case "POST":
-        controller.post(req, res, next);
-        break;
-      case "PUT":
-        controller.put(req, res, next);
-        break;
-      case "DELETE":
-        controller.delete(req, res, next);
-        break;
-      default:
-        res.status(405).send("Método não permitido");
-        break;
+    const metodo = req.method.toLowerCase();
+    if (controller[metodo]) {
+      controller[metodo](req, res, next);
+    } else {
+      res.status(405).send("Método não permitido");
     }
   } catch (error) {
     res.status(500).send("Erro ao processar a rota");
   }
+}
+
+function percorrerDiretorioControladores(diretorio, rotas, prefixo = "") {
+  const arquivos = fs.readdirSync(diretorio);
+
+  arquivos.forEach((arquivo) => {
+    const caminhoArquivo = path.join(diretorio, arquivo);
+    const stats = fs.statSync(caminhoArquivo);
+
+    if (stats.isDirectory()) {
+      const novoPrefixo = path.join(prefixo, arquivo);
+      percorrerDiretorioControladores(caminhoArquivo, rotas, novoPrefixo);
+    } else if (stats.isFile() && arquivo.endsWith(".js")) {
+      const controlador = require(caminhoArquivo);
+      const nomeRota = obterNomeRota(controlador, arquivo);
+      const rota = path.join(prefixo, nomeRota).toLowerCase();
+      rotas[`/${rota}`] = controlador;
+    }
+  });
+}
+
+function obterNomeRota(controlador, arquivo) {
+  const comentarioRota = controlador.toString().match(/@route\s+(.+)/);
+  if (comentarioRota && comentarioRota.length > 1) {
+    return comentarioRota[1].trim();
+  }
+  let nomeRota = arquivo.replace(".js", "");
+  if (nomeRota.toLowerCase().endsWith("controller")) {
+    nomeRota = nomeRota.slice(0, -10);
+  }
+  return nomeRota;
 }
 
 module.exports = redirecionarParaController;
