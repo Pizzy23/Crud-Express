@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-const redirecionarParaController = require("./util/controllerMagic");
-const pastaControladores = `${__dirname}\\controllers`;
+const magicController = require("./util/controllerMagic");
+const folderController = `${__dirname}\\controllers`;
 
 app.use((req, res, next) => {
-  redirecionarParaController(req, res, next, pastaControladores);
+  magicController(req, res, next, folderController);
 });
 
 app.use((req, res, next) => {
