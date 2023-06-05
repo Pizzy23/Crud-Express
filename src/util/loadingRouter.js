@@ -15,10 +15,10 @@ const status = {
 function loadingRouter(controllersDirectory) {
   const log = console.log;
   const routes = [];
-  log(chalk.blue`\n\n\n\nLoading Routers:`);
+  log(chalk.blue`\n\n\n\n Loading Routers:`);
   traverseControllerDirectory(controllersDirectory, routes);
   log("\n+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-+");
-  log(`|${status.routers.padEnd(40, " ")} | `);
+  log(`| ${status.routers.padEnd(40, " ")} | `);
   routes.forEach((route) => {
     log(`| ${route.toLowerCase().padEnd(29, " ")} | `);
   });

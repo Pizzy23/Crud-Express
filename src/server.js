@@ -7,4 +7,4 @@ const hex = chalk.hex("#1338BE");
 const hex2 = chalk.hex("59788E");
 server.listen(port);
 console.log(`\n\n`);
-console.log(hex("Finanças foi iniciado na porta:" + hex2(` ${port}`)));
+console.log(hex("Server starter in port:" + hex2(` ${port}`)));
