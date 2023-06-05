@@ -8,7 +8,11 @@ const clear = new Headers();
 exports.get = async function (req, res, next) {
   try {
     const loginUser = await db.loginUser(clear.clear(req.headers));
-    res.send(loginUser).status(200);
+    if (!loginUser) {
+      res.send("Usuario não encontrado").status(404);
+    } else {
+      res.send(loginUser).status(200);
+    }
   } catch (e) {
     console.log(e);
     res.send(e).status(500);
