@@ -18,16 +18,20 @@ function loadingRouter(controllersDirectory) {
   log(chalk.blue`\n\n\n\n Loading Routers:`);
   traverseControllerDirectory(controllersDirectory, routes);
   log("\n+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-+");
-  log(`| ${status.routers.padEnd(40, " ")} | `);
+  log(`| ${status.routers.padEnd(39, " ")} | `);
+  log(`| ${"".padEnd(29, " ")} |`);
   routes.forEach((route) => {
     log(`| ${route.toLowerCase().padEnd(29, " ")} | `);
   });
+  log(`| ${"".padEnd(29, " ")} |`);
   log(
     `+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-+\n| ${status.release.padEnd(39, " ")} |`
   );
+  log(`| ${"".padEnd(29, " ")} |`);
   log(`| Node Version: ${status.node_version.padEnd(15, " ")} |`);
   log(`| Service Version: ${status.service.padEnd(12, " ")} |`);
   log(`| Service Name: ${status.serviceName.padEnd(15, " ")} |`);
+  log(`| ${"".padEnd(29, " ")} |`);
   log(`+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-+`);
 }
 
