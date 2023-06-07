@@ -49,7 +49,8 @@ function traverseControllerDirectory(directory, routes, prefix = "") {
       const controller = require(filePath);
       const routeName = getRouteName(controller, file);
       const route = path.join(prefix, routeName).toLowerCase();
-      routes.push(`/${route}`);
+      const cleanRoute = route.substring(route.indexOf("\\") + 1); // Remove a parte antes da barra invertida
+      routes.push(`/${cleanRoute}`);
     }
   });
 }

@@ -14,13 +14,13 @@ function logRequest(req, res, next) {
     const statusCode = res.statusCode;
     var logMessage;
     if (statusCode === 200) {
-      logMessage = sucess(`[ ${url} -> ${method} - ${statusCode} ]\n`);
+      logMessage = sucess(`[ ${url} -> ${method} - ${statusCode} ]`);
     } else if (statusCode === 404) {
-      logMessage = notFound(`[ ${url} -> ${method} - ${statusCode} ]\n`);
+      logMessage = notFound(`[ ${url} -> ${method} - ${statusCode} ]`);
     } else if (statusCode === 500) {
-      logMessage = error(`[ ${url} -> ${method} - ${statusCode} ]\n`);
+      logMessage = error(`[ ${url} -> ${method} - ${statusCode} ]`);
     } else if (statusCode === 405) {
-      logMessage = error(`[${url} -> Method not allowed - (${method}) ]\n`);
+      logMessage = error(`[${url} -> Method not allowed - (${method}) ]`);
     }
     console.log(logMessage);
   });
