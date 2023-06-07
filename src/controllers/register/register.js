@@ -12,7 +12,9 @@ class RegisterController extends BaseController {
   }
   async postRegister(req, res, next) {
     try {
-      const registerUser = await db.registerUser(this.clear.clear(req.headers));
+      const registerUser = await db.registerUser(
+        super.validateInput(req.headers)
+      );
       res.send(registerUser).status(200);
     } catch (e) {
       res.send(e).status(500);

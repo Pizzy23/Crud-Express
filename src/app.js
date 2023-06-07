@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
-const magicController = require("./util/controllerMagic");
+const magicController = require("./expressModular/controllerMagic");
 const folderController = `${__dirname}\\controllers`;
-const logRequest = require('./util/logger.js');
-const showLoadedRoutes = require("./util/loadingRouter.js");
+const logRequest = require("./expressModular/logger.js");
+const showLoadedRoutes = require("./expressModular/loadingRouter.js");
 
 showLoadedRoutes(folderController);
-
 
 app.use(logRequest);
 app.use((req, res, next) => {
