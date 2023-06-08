@@ -11,7 +11,7 @@ class LoginController extends BaseController {
   }
   async getLogin(req, res, next) {
     try {
-      const loginUser = await db.loginUser(clear.clear(req.headers));
+      const loginUser = await db.loginUser(super.validateInput(req.headers));
       if (!loginUser) {
         res.send("Usuario não encontrado").status(404);
       } else {

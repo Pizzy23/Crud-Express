@@ -1,7 +1,7 @@
 const { Headers } = require("../../util/headersClear");
 
 class BaseController {
-  constructor(clear) {
+  constructor() {
     this.clear = new Headers();
   }
 
